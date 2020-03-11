@@ -2,7 +2,7 @@
 
 ### 1. Часть 1. Настройка VTP
 
-#### Коммутатор S1
+#### S1
 ```
 S1(config)#do show vtp status
 VTP Version capable             : 1 to 3
@@ -21,10 +21,10 @@ Configuration Revision            : 8
 MD5 digest                        : 0x16 0x68 0xF2 0x0B 0x67 0x31 0x81 0x1B 
                                     0x34 0xDB 0xE5 0xB5 0x68 0x63 0x5A 0x70 
 ```
-#### Коммутатор S2
+#### S2
 ```
 ```
-#### Коммутатор S3
+#### S3
 ```
 S3#show vtp status
 VTP Version                     : 2
@@ -76,8 +76,37 @@ Unknown unicast blocked: disabled
 Unknown multicast blocked: disabled
 Appliance trust: none
 S1#
-
 ```
+### S2
+```
+S2#sh int f0/1 switchport 
+Name: Fa0/1
+Switchport: Enabled
+Administrative Mode: dynamic desirable
+Operational Mode: trunk
+Administrative Trunking Encapsulation: dot1q
+Operational Trunking Encapsulation: dot1q
+Negotiation of Trunking: On
+Access Mode VLAN: 1 (default)
+Trunking Native Mode VLAN: 1 (default)
+Voice VLAN: none
+Administrative private-vlan host-association: none 
+Administrative private-vlan mapping: none 
+Administrative private-vlan trunk native VLAN: none
+Administrative private-vlan trunk encapsulation: dot1q
+Administrative private-vlan trunk normal VLANs: none
+Administrative private-vlan trunk private VLANs: none
+Operational private-vlan: none
+Trunking VLANs Enabled: ALL
+Pruning VLANs Enabled: 2-1001
+Capture Mode Disabled
+Capture VLANs Allowed: ALL
+Protected: false
+Unknown unicast blocked: disabled
+Unknown multicast blocked: disabled
+Appliance trust: none
+```
+
 
 ### Часть 3. Добавление сетей VLAN и назначение портов
 ### Часть 4. Настройка расширенной сети VLAN
