@@ -424,6 +424,27 @@ Neighbor ID     Pri   State           Dead Time   Address         Interface
 33.33.33.33       0   FULL/  -        00:00:39    192.168.13.2    Serial0/0/0
 ```
 
+Проверяем состояние OSPF для интерфейса S0/1/1 маршрутизатора R2:
+```
+R2#show ip ospf interface s0/1/1
+Serial0/1/1 is up, line protocol is up 
+  Internet Address 192.168.12.2/30, Area 0 
+  Process ID 1, Router ID 22.22.22.22, Network Type POINT_TO_POINT, Cost: 781
+  Transmit Delay is 1 sec, State POINT_TO_POINT
+  Timer intervals configured, Hello 10, Dead 40, Wait 40, Retransmit 5
+    oob-resync timeout 40
+    **No Hellos (Passive interface)**
+  Supports Link-local Signaling (LLS)
+  Cisco NSF helper support enabled
+  IETF NSF helper support enabled
+  Index 2/2, flood queue length 0
+  Next 0x0(0)/0x0(0)
+  Last flood scan length is 0, maximum is 0
+  Last flood scan time is 0 msec, maximum is 0 msec
+  Neighbor Count is 0, Adjacent neighbor count is 0 
+  Suppress hello for 0 neighbor(s)
+```
+
 
 
 ## Часть 5. Изменение метрик OSPF
