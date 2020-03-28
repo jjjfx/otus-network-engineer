@@ -408,14 +408,14 @@ Neighbor ID     Pri   State           Dead Time   Address         Interface
 22.22.22.22       0   FULL/  -        00:00:32    192.168.12.2    Serial0/0/1
 ```
 
-Вносим измнения в R2:
+Вносим изменения в R2:
 ```
 R2(config)#router ospf 1
 R2(config-router)#passive-interface default
 R2(config-router)#end
 ```
 
-Проверяем измнения на R1:
+Проверяем изменения на R1:
 ```
 R1#
 *Jun  6 07:34:07.879: %OSPF-5-ADJCHG: Process 1, Nbr 22.22.22.22 on Serial0/0/1 from FULL to DOWN, Neighbor Down: Dead timer expired
@@ -433,7 +433,7 @@ Serial0/1/1 is up, line protocol is up
   Transmit Delay is 1 sec, State POINT_TO_POINT
   Timer intervals configured, Hello 10, Dead 40, Wait 40, Retransmit 5
     oob-resync timeout 40
-    **No Hellos (Passive interface)**
+    No Hellos (Passive interface) 
   Supports Link-local Signaling (LLS)
   Cisco NSF helper support enabled
   IETF NSF helper support enabled
@@ -445,7 +445,135 @@ Serial0/1/1 is up, line protocol is up
   Suppress hello for 0 neighbor(s)
 ```
 
+Разрешаем OSPF анонсировать маршруты для линковочных интерфейсов между маршрутизаторами:
 
+```
+R2(config)#router ospf 1
+R2(config-router)#no passive-interface se0/1/1
+R2(config-router)#no passive-interface se0/1/0
+R2(config-router)#end
+
+R1(config)#router ospf 1
+R1(config-router)#no passive-interface se0/0/0
+R1(config-router)#no passive-interface se0/0/1
+R1(config-router)#end
+
+R3(config)#router ospf 1
+R3(config-router)#no passive-interface se0/3/0
+R3(config-router)#no passive-interface se0/3/1
+R3(config-router)#end
+```
+
+Проверяем корректность настроек:
+```
+R1#sh ip protocols 
+*** IP Routing is NSF aware ***
+Routing Protocol is "ospf 1"
+  Outgoing update filter list for all interfaces is not set
+  Incoming update filter list for all interfaces is not set
+  Router ID 11.11.11.11
+  Number of areas in this router is 1. 1 normal 0 stub 0 nssa
+  Maximum path: 4
+  Routing for Networks:
+    192.168.1.0 0.0.0.255 area 0
+    192.168.12.0 0.0.0.3 area 0
+    192.168.13.0 0.0.0.3 area 0
+  Passive Interface(s):
+    GigabitEthernet0/0
+    GigabitEthernet0/1
+  Routing Information Sources:
+    Gateway         Distance      Last Update
+    33.33.33.33          110      00:02:16
+    22.22.22.22          110      00:05:11
+    192.168.23.2         110      00:06:14
+    192.168.23.1         110      00:06:04
+  Distance: (default is 110)
+R1#sh ip ospf int br
+Interface    PID   Area            IP Address/Mask    Cost  State Nbrs F/C
+Se0/0/1      1     0               192.168.12.1/30    781   P2P   1/1
+Se0/0/0      1     0               192.168.13.1/30    781   P2P   1/1
+Gi0/0        1     0               192.168.1.1/24     1     DR    0/0
+R1#sh ip route ospf | b Gateway
+Gateway of last resort is not set
+O     192.168.2.0/24 [110/782] via 192.168.12.2, 00:05:41, Serial0/0/1
+O     192.168.3.0/24 [110/782] via 192.168.13.2, 00:02:46, Serial0/0/0
+      192.168.23.0/30 is subnetted, 1 subnets
+O        192.168.23.0 [110/845] via 192.168.13.2, 00:02:46, Serial0/0/0
+```
+
+```
+R2#sh ip protocols 
+Routing Protocol is "ospf 1"
+  Outgoing update filter list for all interfaces is not set
+  Incoming update filter list for all interfaces is not set
+  Router ID 22.22.22.22
+  Number of areas in this router is 1. 1 normal 0 stub 0 nssa
+  Maximum path: 4
+  Routing for Networks:
+    192.168.2.0 0.0.0.255 area 0
+    192.168.12.0 0.0.0.3 area 0
+    192.168.23.0 0.0.0.3 area 0
+ Reference bandwidth unit is 100 mbps
+  Passive Interface(s):
+    FastEthernet0/0
+    FastEthernet0/1
+    VoIP-Null0
+  Routing Information Sources:
+    Gateway         Distance      Last Update
+    33.33.33.33          110      00:04:09
+    11.11.11.11          110      00:05:42
+    192.168.23.2         110      00:05:32
+  Distance: (default is 110)
+R2#sh ip ospf int br
+Interface    PID   Area            IP Address/Mask    Cost  State Nbrs F/C
+Se0/1/0      1     0               192.168.23.1/30    781   P2P   1/1
+Se0/1/1      1     0               192.168.12.2/30    781   P2P   1/1
+Fa0/0        1     0               192.168.2.1/24     1     DR    0/0
+R2#sh ip route ospf
+     192.168.13.0/30 is subnetted, 1 subnets
+O       192.168.13.0 [110/845] via 192.168.23.2, 00:04:27, Serial0/1/0
+O    192.168.1.0/24 [110/782] via 192.168.12.1, 00:07:22, Serial0/1/1
+O    192.168.3.0/24 [110/782] via 192.168.23.2, 00:04:27, Serial0/1/0
+```
+
+```
+R3#sh ip protocols 
+*** IP Routing is NSF aware ***
+Routing Protocol is "ospf 1"
+  Outgoing update filter list for all interfaces is not set
+  Incoming update filter list for all interfaces is not set
+  Router ID 33.33.33.33
+  Number of areas in this router is 1. 1 normal 0 stub 0 nssa
+  Maximum path: 4
+  Routing for Networks:
+    192.168.3.0 0.0.0.255 area 0
+    192.168.13.0 0.0.0.3 area 0
+    192.168.23.0 0.0.0.3 area 0
+  Passive Interface(s):
+    FastEthernet0/0
+    FastEthernet0/1
+    VoIP-Null0
+  Routing Information Sources:
+    Gateway         Distance      Last Update
+    22.22.22.22          110      00:05:01
+    11.11.11.11          110      00:05:01
+    192.168.13.1         110      00:11:27
+    192.168.23.1         110      00:08:12
+  Distance: (default is 110)
+          
+R3#sh ip ospf int br
+Interface    PID   Area            IP Address/Mask    Cost  State Nbrs F/C
+Se0/3/1      1     0               192.168.23.2/30    64    P2P   1/1
+Se0/3/0      1     0               192.168.13.2/30    64    P2P   1/1
+Fa0/0        1     0               192.168.3.1/24     1     DR    0/0
+R3#sh ip route ospf | b Gateway
+Gateway of last resort is not set
+O     192.168.1.0/24 [110/65] via 192.168.13.1, 00:05:17, Serial0/3/0
+O     192.168.2.0/24 [110/65] via 192.168.23.1, 00:05:17, Serial0/3/1
+      192.168.12.0/30 is subnetted, 1 subnets
+O        192.168.12.0 [110/845] via 192.168.23.1, 00:05:17, Serial0/3/1
+                      [110/845] via 192.168.13.1, 00:05:17, Serial0/3/0
+```
 
 ## Часть 5. Изменение метрик OSPF
 
