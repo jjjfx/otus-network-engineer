@@ -615,9 +615,119 @@ Serial0/0/0 is up, line protocol is up
 ...
 ```
 
+
+Изменим параметр эталонной пропускной способности по умолчанию на всех маршрутизаторах:
+```
+R1(config)#router ospf 1
+R1(config-router)#auto-cost reference-bandwidth 10000
+R1(config-router)#end
+
+R2(config)#router ospf 1
+R2(config-router)#auto-cost reference-bandwidth 10000
+R2(config-router)#end
+
+R3(config)#router ospf 1
+R3(config-router)#auto-cost reference-bandwidth 10000
+R3(config-router)#end
+```
+
+И проверим изменение суммарной стоимости для маршрутов:
+```
+R1#sh ip route ospf | b Gateway
+Gateway of last resort is not set
+O     192.168.2.0/24 [110/65635] via 192.168.12.2, 00:05:02, Serial0/0/1
+O     192.168.3.0/24 [110/65635] via 192.168.13.2, 00:04:49, Serial0/0/0
+      192.168.23.0/30 is subnetted, 1 subnets
+O        192.168.23.0 [110/72011] via 192.168.13.2, 00:04:49, Serial0/0/0
+
+
+R2#sh ip route ospf
+     192.168.13.0/30 is subnetted, 1 subnets
+O       192.168.13.0 [110/72011] via 192.168.23.2, 00:05:14, Serial0/1/0
+O    192.168.1.0/24 [110/65545] via 192.168.12.1, 00:05:24, Serial0/1/1
+O    192.168.3.0/24 [110/65635] via 192.168.23.2, 00:05:14, Serial0/1/0
+
+
+R3#sh ip route ospf | b Gateway
+Gateway of last resort is not set
+O     192.168.1.0/24 [110/6486] via 192.168.13.1, 00:05:43, Serial0/3/0
+O     192.168.2.0/24 [110/6576] via 192.168.23.1, 00:05:43, Serial0/3/1
+      192.168.12.0/30 is subnetted, 1 subnets
+O        192.168.12.0 [110/72011] via 192.168.23.1, 00:05:43, Serial0/3/1
+                      [110/72011] via 192.168.13.1, 00:05:43, Serial0/3/0
+```
+
+Суммарная стоимость маршрута для 192.168.3.0/24 на R1 теперь равна 65635 = 65535 + 100
+
+```
+R1#sh ip ospf int se0/0/0 | i Cost:
+  Process ID 1, Router ID 11.11.11.11, Network Type POINT_TO_POINT, Cost: 65535
+
+R3#sh ip ospf int fa0/0 | i Cost:
+  Process ID 1, Router ID 33.33.33.33, Network Type BROADCAST, Cost: 100
+```
+
+(Возвращаем значение эталонной пропускной способности OSPF командой `auto-cost reference-bandwidth 100`).
+
 ##### Шаг 2. Изменение пропускной способности для интерфейса.
 
+Проверим связь маршрутов с пропускной способностью каналов.  
 
+Вначале посмотрим текущее состояние интерфейса S0/3/1 и маршрутной информации OSPF на R3:
+```
+R3#sh int se0/3/1              
+Serial0/3/1 is up, line protocol is up 
+  Hardware is GT96K Serial
+  Description: -- to R2
+  Internet address is 192.168.23.2/30
+  MTU 1500 bytes, BW 1544 Kbit/sec, DLY 20000 usec, 
+
+R3#sh ip route ospf | b Gateway
+Gateway of last resort is not set
+O     192.168.1.0/24 [110/65] via 192.168.13.1, 00:15:23, Serial0/3/0
+O     192.168.2.0/24 [110/65] via 192.168.23.1, 00:00:07, Serial0/3/1
+      192.168.12.0/30 is subnetted, 1 subnets
+O        192.168.12.0 [110/845] via 192.168.23.1, 00:00:07, Serial0/3/1
+                      [110/845] via 192.168.13.1, 00:15:23, Serial0/3/0
+
+R3#sh ip ospf int br           
+Interface    PID   Area            IP Address/Mask    Cost  State Nbrs F/C
+Se0/3/1      1     0               192.168.23.2/30    64    P2P   1/1
+Se0/3/0      1     0               192.168.13.2/30    64    P2P   1/1
+Fa0/0        1     0               192.168.3.1/24     1     DR    0/0
+```
+
+Задаем значение пропускной способности:
+```
+R3(config)#int se0/3/1
+R3(config-if)#no bandwidth 
+R3(config-if)#end
+```
+
+И проверяем состояние интерфейса и маршруты:
+```
+R3#sh int se0/3/1
+Serial0/3/1 is up, line protocol is up 
+  Hardware is GT96K Serial
+  Description: -- to R2
+  Internet address is 192.168.23.2/30
+  MTU 1500 bytes, BW 128 Kbit/sec, DLY 20000 usec,
+
+R3#sh ip route ospf | b Gateway
+Gateway of last resort is not set
+O     192.168.1.0/24 [110/65] via 192.168.13.1, 00:14:54, Serial0/3/0
+O     192.168.2.0/24 [110/782] via 192.168.23.1, 00:07:35, Serial0/3/1
+      192.168.12.0/30 is subnetted, 1 subnets
+O        192.168.12.0 [110/845] via 192.168.13.1, 00:14:54, Serial0/3/0
+
+R3#sh ip ospf int br           
+Interface    PID   Area            IP Address/Mask    Cost  State Nbrs F/C
+Se0/3/1      1     0               192.168.23.2/30    781   P2P   1/1
+Se0/3/0      1     0               192.168.13.2/30    64    P2P   1/1
+Fa0/0        1     0               192.168.3.1/24     1     DR    0/0
+```
+
+Видим, что из таблицы маршрутизации исчез маршрут для 192.168.23.0/30 через S0/3/1 в связи возросшей с 64 до 781 стоимостью интерфейса.
 
 ##### Шаг 3. Изменение стоимости маршрута.
 
