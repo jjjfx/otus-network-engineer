@@ -318,17 +318,91 @@ Neighbor ID     Pri   State           Dead Time   Address         Interface
 11.11.11.11       0   FULL/  -        00:00:32    192.168.13.1    Serial0/3/0
 ```
 
-##### Шаг 3. Изменение 
-
-##### Шаг 3. Изменение 
-
-##### Шаг 3. Изменение 
-
-##### Шаг 3. Изменение 
-
-
-
 ## Часть 4. Настройка пассивных интерфейсов OSPF
 
+##### Шаг 1. Настройка пассивного интерфейса.
+
+Смотрим текущее состояние интерфейса:
+```
+R1#sh ip ospf int gi0/0
+GigabitEthernet0/0 is up, line protocol is up 
+  Internet Address 192.168.1.1/24, Area 0 
+  Process ID 1, Router ID 11.11.11.11, Network Type BROADCAST, Cost: 1
+  Topology-MTID    Cost    Disabled    Shutdown      Topology Name
+        0           1         no          no            Base
+  Transmit Delay is 1 sec, State DR, Priority 1
+  Designated Router (ID) 11.11.11.11, Interface address 192.168.1.1
+  No backup designated router on this network
+  Timer intervals configured, Hello 10, Dead 40, Wait 40, Retransmit 5
+    oob-resync timeout 40
+    Hello due in 00:00:08
+  Supports Link-local Signaling (LLS)
+  Cisco NSF helper support enabled
+  IETF NSF helper support enabled
+  Index 1/1, flood queue length 0
+  Next 0x0(0)/0x0(0)
+  Last flood scan length is 0, maximum is 0
+  Last flood scan time is 0 msec, maximum is 0 msec
+  Neighbor Count is 0, Adjacent neighbor count is 0 
+  Suppress hello for 0 neighbor(s)
+```
+
+Вносим изменения в конфигурацию маршрутизатора:
+```
+router ospf 1
+passive-interface gi0/0
+end
+```
+
+Наблюдаем изменения в состоянии интерфейса:
+```
+R1#sh ip ospf int gi0/0
+*Jun  6 07:28:06.071: %SYS-5-CONFIG_I: Configured from console by console
+GigabitEthernet0/0 is up, line protocol is up 
+  Internet Address 192.168.1.1/24, Area 0 
+  Process ID 1, Router ID 11.11.11.11, Network Type BROADCAST, Cost: 1
+  Topology-MTID    Cost    Disabled    Shutdown      Topology Name
+        0           1         no          no            Base
+  Transmit Delay is 1 sec, State WAITING, Priority 1
+  No designated router on this network
+  No backup designated router on this network
+  Timer intervals configured, Hello 10, Dead 40, Wait 40, Retransmit 5
+    oob-resync timeout 40
+    No Hellos (Passive interface) 
+    Wait time before Designated router selection 00:00:32
+  Supports Link-local Signaling (LLS)
+  Cisco NSF helper support enabled
+  IETF NSF helper support enabled
+  Index 1/1, flood queue length 0
+  Next 0x0(0)/0x0(0)
+  Last flood scan length is 0, maximum is 0
+  Last flood scan time is 0 msec, maximum is 0 msec
+  Neighbor Count is 0, Adjacent neighbor count is 0 
+  Suppress hello for 0 neighbor(s)
+```
+
+Проверяем наличие маршрутов на соседних коммутаторах:
+```
+R2#sh ip route ospf
+     192.168.13.0/30 is subnetted, 1 subnets
+O       192.168.13.0 [110/845] via 192.168.23.2, 00:03:16, Serial0/1/0
+O    192.168.1.0/24 [110/782] via 192.168.12.1, 00:03:39, Serial0/1/1
+O    192.168.3.0/24 [110/782] via 192.168.23.2, 00:03:16, Serial0/1/0
+
+R3#sh ip route ospf | b Gateway
+Gateway of last resort is not set
+O     192.168.1.0/24 [110/65] via 192.168.13.1, 00:04:44, Serial0/3/0
+O     192.168.2.0/24 [110/65] via 192.168.23.1, 00:04:44, Serial0/3/1
+      192.168.12.0/30 is subnetted, 1 subnets
+O        192.168.12.0 [110/845] via 192.168.23.1, 00:04:44, Serial0/3/1
+                      [110/845] via 192.168.13.1, 00:04:44, Serial0/3/0
+```
+
 ## Часть 5. Изменение метрик OSPF
+
+##### Шаг 3. Изменение 
+
+##### Шаг 3. Изменение 
+
+##### Шаг 3. Изменение 
 
