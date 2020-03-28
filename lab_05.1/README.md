@@ -700,7 +700,7 @@ Fa0/0        1     0               192.168.3.1/24     1     DR    0/0
 Задаем значение пропускной способности:
 ```
 R3(config)#int se0/3/1
-R3(config-if)#no bandwidth 
+R3(config-if)#bandwidth 128
 R3(config-if)#end
 ```
 
