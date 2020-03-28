@@ -34,7 +34,7 @@
 
 Результат изменений:
 
-```shell
+```
 R1#sh int descr | i up
 Interface                      Status         Protocol Description
 Gi0/0                          up             up       -- to PC-A
@@ -50,7 +50,7 @@ Serial0/0/1                192.168.12.1    YES manual up                    up
 
 Результат изменений:
 
-```shell
+```
 R2#sh int descr | i up
 Interface                      Status         Protocol Description
 Fa0/0                          up             up       -- to PC-B
@@ -73,7 +73,7 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 12/15/16 ms
 
 Результат изменений:
 
-```shell
+```
 R3#sh int descr | i up
 Interface                      Status         Protocol Description
 Fa0/0                          up             up       -- to PC-C
