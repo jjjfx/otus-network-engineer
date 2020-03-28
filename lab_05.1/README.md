@@ -273,7 +273,7 @@ GigabitEthernet0/0 is up, line protocol is up
 
 Вносим измнения в конфиг маршрутизаторов и перезагружаем ospf:
 
-** R1: **  
+**R1:**  
 ```
 conf t
 router ospf 1
@@ -281,7 +281,7 @@ router-id 11.11.11.11
 end
 ```
 
-** R2: **  
+**R2:**  
 ```
 conf t
 router ospf 1
@@ -289,7 +289,7 @@ router-id 22.22.22.22
 end
 ```
 
-** R3: **  
+**R3:**  
 ```
 conf t
 router ospf 1
