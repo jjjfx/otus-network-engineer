@@ -279,6 +279,7 @@ conf t
 router ospf 1
 router-id 11.11.11.11
 end
+clear ip ospf process
 ```
 
 **R2:**
@@ -287,6 +288,7 @@ conf t
 router ospf 1
 router-id 22.22.22.22
 end
+clear ip ospf process
 ```
 
 **R3:**
@@ -295,9 +297,26 @@ conf t
 router ospf 1
 router-id 33.33.33.33
 end
+clear ip ospf process
 ```
 
+Результат:
+```
+R1# sh ip ospf nei
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+33.33.33.33       0   FULL/  -        00:00:38    192.168.13.2    Serial0/0/0
+22.22.22.22       0   FULL/  -        00:00:35    192.168.12.2    Serial0/0/1
 
+R2#sh ip ospf nei
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+33.33.33.33       0   FULL/  -        00:00:31    192.168.23.2    Serial0/1/0
+11.11.11.11       0   FULL/  -        00:00:38    192.168.12.1    Serial0/1/1
+
+R3#sh ip ospf nei
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+22.22.22.22       0   FULL/  -        00:00:31    192.168.23.1    Serial0/3/1
+11.11.11.11       0   FULL/  -        00:00:32    192.168.13.1    Serial0/3/0
+```
 
 ##### Шаг 3. Изменение 
 
