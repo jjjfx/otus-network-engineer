@@ -579,9 +579,45 @@ O        192.168.12.0 [110/845] via 192.168.23.1, 00:05:17, Serial0/3/1
 
 ##### Шаг 1. Изменяем заданную пропускную способность для маршрутизаторов.
 
+Проверяем текущее значение пропускной способности интерфейса gi0/0 на R1:
+```
+R1#sh int gi0/0
+GigabitEthernet0/0 is up, line protocol is up 
+  Hardware is CN Gigabit Ethernet, address is e8b7.484a.1100 (bia e8b7.484a.1100)
+  Description: -- to PC-A
+  Internet address is 192.168.1.1/24
+  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, 
+...
+```
+
+Смотрим чему равна суммарная метрика для маршрута к сети 192.168.3.0/24:
+```
+R1#sh ip route ospf | b Gateway
+Gateway of last resort is not set
+O     192.168.2.0/24 [110/782] via 192.168.12.2, 00:29:52, Serial0/0/1
+O     192.168.3.0/24 [110/782] via 192.168.13.2, 00:06:28, Serial0/0/0
+      192.168.23.0/30 is subnetted, 1 subnets
+O        192.168.23.0 [110/845] via 192.168.13.2, 00:02:45, Serial0/0/0
+```
+
+Как следует из вывода команды, суммарная метрика равна 782 и равна сумме стоимости интерфейса fa0/0 на маршрутизаторе R3 и стоимости интерфейса s0/0/0 на R1:
+```
+R3#sh ip ospf int fa0/0    
+FastEthernet0/0 is up, line protocol is up 
+  Internet Address 192.168.3.1/24, Area 0, Attached via Network Statement
+  Process ID 1, Router ID 33.33.33.33, Network Type BROADCAST, Cost: 1
+...
+
+R1#sh ip ospf int se0/0/0
+Serial0/0/0 is up, line protocol is up 
+  Internet Address 192.168.13.1/30, Area 0 
+  Process ID 1, Router ID 11.11.11.11, Network Type POINT_TO_POINT, Cost: 781
+...
+```
+
+##### Шаг 2. Изменение пропускной способности для интерфейса.
 
 
-##### Шаг 2. Изменение 
 
 ##### Шаг 3. Изменение стоимости маршрута.
 
