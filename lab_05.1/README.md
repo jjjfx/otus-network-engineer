@@ -110,6 +110,22 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 12/14/16 ms
 
 Файл изменений конфигурации маршрутизатора R1: [R3 config](configs/R3_conf_part2.txt)
 
+Результат:
+
+```
+R1#show ip ospf neighbor
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+192.168.23.2      0   FULL/  -        00:00:38    192.168.13.2    Serial0/0/0
+192.168.23.1      0   FULL/  -        00:00:33    192.168.12.2    Serial0/0/1
+
+R1#sh ip route ospf | b Gateway
+Gateway of last resort is not set
+O     192.168.2.0/24 [110/782] via 192.168.12.2, 00:02:28, Serial0/0/1
+O     192.168.3.0/24 [110/782] via 192.168.13.2, 00:01:44, Serial0/0/0
+      192.168.23.0/30 is subnetted, 1 subnets
+O        192.168.23.0 [110/845] via 192.168.13.2, 00:01:44, Serial0/0/0
+```
+
 
 ## Часть 3. Изменение назначений идентификаторов маршрутизаторов
 
