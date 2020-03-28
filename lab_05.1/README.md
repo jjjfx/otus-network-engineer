@@ -398,6 +398,34 @@ O        192.168.12.0 [110/845] via 192.168.23.1, 00:04:44, Serial0/3/1
                       [110/845] via 192.168.13.1, 00:04:44, Serial0/3/0
 ```
 
+##### Шаг 2. Настройка на маршрутизаторе пассивного интерфейса в качестве интерфейса по умолчанию.
+
+Фиксируем текущее состояние ospf-соседства:
+```
+R1#sh ip ospf nei
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+33.33.33.33       0   FULL/  -        00:00:37    192.168.13.2    Serial0/0/0
+22.22.22.22       0   FULL/  -        00:00:32    192.168.12.2    Serial0/0/1
+```
+
+Вносим измнения в R2:
+```
+R2(config)#router ospf 1
+R2(config-router)#passive-interface default
+R2(config-router)#end
+```
+
+Проверяем измнения на R1:
+```
+R1#
+*Jun  6 07:34:07.879: %OSPF-5-ADJCHG: Process 1, Nbr 22.22.22.22 on Serial0/0/1 from FULL to DOWN, Neighbor Down: Dead timer expired
+R1#sh ip ospf nei
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+33.33.33.33       0   FULL/  -        00:00:39    192.168.13.2    Serial0/0/0
+```
+
+
+
 ## Часть 5. Изменение метрик OSPF
 
 ##### Шаг 3. Изменение 
