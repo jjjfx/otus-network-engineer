@@ -32,6 +32,20 @@
 
 Файл изменений конфигурации маршрутизатора R1 [R1.conf](configs/R1_conf_part1.txt)
 
+```shell
+R1#sh int descr
+Interface                      Status         Protocol Description
+Gi0/0                          up             up       -- to PC-A
+Gi0/1                          admin down     down     
+Se0/0/0                        up             up       -- to R3
+Se0/0/1                        up             up       -- to R2
+R1#sh ip int br | i up
+GigabitEthernet0/0         192.168.1.1     YES manual up                    up      
+Serial0/0/0                192.168.13.1    YES manual up                    up      
+Serial0/0/1                192.168.12.1    YES manual up                    up      
+R1#
+```
+
 Файл изменений конфигурации маршрутизатора R2 [R2.conf](configs/R2_conf_part1.txt)
 
 Файл изменений конфигурации маршрутизатора R3 [R3.conf](configs/R3_conf_part1.txt)
