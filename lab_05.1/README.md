@@ -127,7 +127,7 @@ O        192.168.23.0 [110/845] via 192.168.13.2, 00:01:44, Serial0/0/0
 
 ###### Шаг 4. Проверка параметров протокола OSPF.
 
-'''
+```
 R1#sh ip protocols
 *** IP Routing is NSF aware ***
 Routing Protocol is "ospf 1"
@@ -145,11 +145,11 @@ Routing Protocol is "ospf 1"
     192.168.23.2         110      00:02:19
     192.168.23.1         110      00:03:03
   Distance: (default is 110)
-'''
+```
 
 ###### Шаг 5. Проверка данных процесса OSPF.
 
-'''
+```
 R1#sh ip ospf
  Routing Process "ospf 1" with ID 192.168.13.1
  Start time: 00:46:40.796, Time elapsed: 00:04:16.120
@@ -190,18 +190,17 @@ Number of DCbitless LSA 0
 Number of indication LSA 0
 Number of DoNotAge LSA 0
 Flood list length 0
-'''
+```
 
 ###### Шаг 6. Проверка параметров интерфейса OSPF.
 
-'''
+```
 R1#show ip ospf interface brief
 Interface    PID   Area            IP Address/Mask    Cost  State Nbrs F/C
 Se0/0/0      1     0               192.168.13.1/30    781   P2P   1/1
 Se0/0/1      1     0               192.168.12.1/30    781   P2P   1/1
 Gi0/0        1     0               192.168.1.1/24     1     DR    0/0
 R1#
-
 
 R1#show ip ospf interface      
 Serial0/0/0 is up, line protocol is up 
@@ -262,7 +261,7 @@ GigabitEthernet0/0 is up, line protocol is up
   Last flood scan time is 0 msec, maximum is 0 msec
   Neighbor Count is 0, Adjacent neighbor count is 0 
   Suppress hello for 0 neighbor(s)
-'''
+```
 
 ###### Шаг 7. Проверка наличия сквозного соединения.
 
