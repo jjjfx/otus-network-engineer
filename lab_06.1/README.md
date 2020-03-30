@@ -425,3 +425,30 @@ Link ID         ADV Router      Age         Seq#       Checksum
 Так маршруты 192.168.1.0/24 и 192.168.2.0/24 суммировались в 192.168.0.0/22, который представлен в базах данных идентификатором 192.168.0.0.  
 А маршруты 192.168.4.0/24 и 192.168.5.0/24 суммировались в 192.168.4.0/23, который представлен в базах данных идентификатором 192.168.4.0.  
 
+Корректность настроек подтверждается результатами эхо-запросов:  
+```
+R1#ping 192.168.4.1
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.4.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 28/28/28 ms
+R1#ping 192.168.5.1
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.5.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 28/28/32 ms
+R1#
+
+R3#ping 192.168.1.1
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 28/28/28 ms
+R3#ping 192.168.2.1
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.2.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 28/28/32 ms
+R3#
+```
+
