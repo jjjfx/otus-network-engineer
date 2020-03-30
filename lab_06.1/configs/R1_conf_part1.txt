@@ -1,0 +1,25 @@
+no ip domain-lookup
+hostname R1
+enable secret class
+
+line vty 0 15
+password cisco
+login
+exit
+
+line con 0
+password cisco
+logging synchronous
+login
+exit
+
+banner motd #
+This device is for authorized use only.
+#
+
+interface se0/0/1
+description -- to R2
+ip address 192.168.12.1 255.255.255.252
+bandwidth 128
+no shutdown
+end

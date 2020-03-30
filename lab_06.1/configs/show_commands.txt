@@ -1,0 +1,5 @@
+sh ip protocols
+sh ip route ospf | b Gateway
+sh ip ospf nei
+sh ip ospf int br
+
