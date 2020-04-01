@@ -1,0 +1,42 @@
+no ip domain-lookup
+hostname S1
+enable secret class
+
+line vty 0 15
+exec-timeout 60 0
+password cisco
+login
+exit
+
+line con 0
+exec-timeout 60 0
+password cisco
+logging synchronous
+login
+exit
+
+banner motd #
+This device is for authorized use only.
+#
+
+interface fa0/1
+description -- to S3 fa0/3
+no shutdown
+interface fa0/2
+description -- to S3 fa0/4
+no shutdown
+interface fa0/3
+description -- to S2 fa0/3
+no shutdown
+interface fa0/4
+description -- to S2 fa0/4
+no shutdown
+interface range fa0/5 - 24
+shutdown
+interface range gi0/1 - 2
+shutdown
+interface vlan 1
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+end
+
