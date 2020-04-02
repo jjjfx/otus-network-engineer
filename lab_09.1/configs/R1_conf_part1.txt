@@ -1,5 +1,5 @@
 no ip domain-lookup
-hostname R2
+hostname R1
 enable secret class
 
 line vty 0 15
@@ -17,21 +17,22 @@ banner motd #
 This device is for authorized use only.
 #
 
-interface fa0/0
-description -- to PC-B
-ip address 192.168.2.1 255.255.255.0
+interface gi0/0
+description -- to PC-A
+ip address 192.168.1.1 255.255.255.0
 no shutdown
 exit
 
-interface se0/1/0
+interface se0/0/0
 description -- to R3
-ip address 192.168.23.1 255.255.255.252
+ip address 10.3.3.1 255.255.255.252
+bandwidth 128
 no shutdown
 exit
 
-interface se0/1/1
-description -- to R1
-ip address 192.168.12.2 255.255.255.252
-clock rate 128000
+interface se0/0/1
+description -- to R2
+ip address 10.1.1.1 255.255.255.252
+bandwidth 128
 no shutdown
 end

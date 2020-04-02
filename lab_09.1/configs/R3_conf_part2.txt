@@ -1,0 +1,5 @@
+router eigrp 10
+network 10.2.2.0 0.0.0.3
+network 10.3.3.0 0.0.0.3
+network 192.168.1.0 0.0.0.255
+end

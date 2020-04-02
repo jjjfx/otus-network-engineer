@@ -1,5 +1,5 @@
 no ip domain-lookup
-hostname R2
+hostname R3
 enable secret class
 
 line vty 0 15
@@ -18,20 +18,23 @@ This device is for authorized use only.
 #
 
 interface fa0/0
-description -- to PC-B
-ip address 192.168.2.1 255.255.255.0
+description -- to PC-C
+ip address 192.168.3.1 255.255.255.0
 no shutdown
 exit
 
-interface se0/1/0
-description -- to R3
-ip address 192.168.23.1 255.255.255.252
-no shutdown
-exit
-
-interface se0/1/1
+interface se0/3/0
 description -- to R1
-ip address 192.168.12.2 255.255.255.252
+ip address 10.3.3.2 255.255.255.252
 clock rate 128000
+bandwidth 128
+no shutdown
+exit
+
+interface se0/3/1
+description -- to R2
+ip address 10.2.2.1 255.255.255.252
+clock rate 128000
+bandwidth 128
 no shutdown
 end
