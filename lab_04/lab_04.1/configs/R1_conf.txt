@@ -3,11 +3,13 @@ hostname R1
 enable secret class
 
 line vty 0 15
+exec-timeout 60 0
 password cisco
 login
 exit
 
 line con 0
+exec-timeout 60 0
 password cisco
 logging synchronous
 login

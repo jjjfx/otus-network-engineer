@@ -1,0 +1,56 @@
+no ip domain-lookup
+hostname S2
+enable secret class
+
+line vty 0 15
+exec-timeout 60 0
+password cisco
+login
+exit
+
+line con 0
+exec-timeout 60 0
+password cisco
+logging synchronous
+login
+exit
+
+banner motd #
+This device is for authorized use only.
+#
+
+interface range f0/1 - 24, g0/1 - 2
+shutdown
+exit
+
+vlan 10
+ name User
+vlan 99
+ name Management
+spanning-tree vlan 1,10,99 root primary
+
+interface range f0/1 - 2
+ switchport mode trunk
+ channel-group 3 mode desirable
+ switchport trunk native vlan 99
+ no shutdown
+interface range f0/3 - 4
+ channel-group 1 mode desirable
+ switchport trunk native vlan 99
+ no shutdown
+interface f0/15
+ switchport mode access
+ switchport access vlan 10
+ no shutdown
+interface vlan 99
+ ip address 192.168.1.12 255.255.255.0
+interface port-channel 1
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 1,99
+ switchport mode trunk
+interface port-channel 3
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 1,10,99
+ switchport mode access
+end
+
