@@ -6,8 +6,6 @@ line vty 0 15
 exec-timeout 60 0
 password cisco
 login
-exit
-
 line con 0
 exec-timeout 60 0
 password cisco
@@ -19,15 +17,14 @@ banner motd #
 This device is for authorized use only.
 #
 
+vtp mode transparent
 vlan 10
 name Staff
 vlan 99
 name Management
 exit
 
-interface range fa0/1 - 24
-shutdown
-interface range gi0/1 - 2
+interface range fa0/1 - 24, gi0/1 - 2
 shutdown
 interface fa0/1
 description -- to S3 fa0/3
@@ -44,7 +41,7 @@ no shutdown
 interface fa0/15
 description -- to PC-A
 switchport mode access
-switchport access native vlan 10
+switchport access vlan 10
 no shutdown
 interface vlan 99
 ip address 192.168.99.11 255.255.255.0
