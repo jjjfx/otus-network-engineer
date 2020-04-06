@@ -1,4 +1,4 @@
-# Название лабораторной работы
+# Настройка HSRP (Hot Standby Router Protocol)
 
 ### Топология:
 ![](images/otus-topology.png)
