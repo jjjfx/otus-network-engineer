@@ -17,16 +17,9 @@ banner motd #
 This device is for authorized use only.
 #
 
-interface gi0/0
-description -- to PC-A
+interface gi0/1
+description -- to S1
 ip address 192.168.1.1 255.255.255.0
-no shutdown
-exit
-
-interface se0/0/0
-description -- to R3
-ip address 10.3.3.1 255.255.255.252
-bandwidth 128
 no shutdown
 exit
 

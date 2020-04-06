@@ -17,12 +17,6 @@ banner motd #
 This device is for authorized use only.
 #
 
-interface fa0/0
-description -- to PC-B
-ip address 192.168.2.1 255.255.255.0
-no shutdown
-exit
-
 interface se0/1/0
 description -- to R3
 ip address 10.2.2.2 255.255.255.252
@@ -36,4 +30,11 @@ ip address 10.1.1.2 255.255.255.252
 clock rate 128000
 bandwidth 128
 no shutdown
+exit
+
+interface loopback 0
+description -- Lo0
+ip address 209.165.200.225 255.255.255.224
+no shutdown
 end
+
