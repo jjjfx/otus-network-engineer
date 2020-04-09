@@ -1,0 +1,8 @@
+
+interface loopback 1
+ip address 192.168.22.1 255.255.255.252
+exit
+
+router eigrp 1
+network 192.168.22.0 255.255.255.252
+exit

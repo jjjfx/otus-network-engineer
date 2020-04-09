@@ -1,36 +1,23 @@
-no ip domain-lookup
 hostname S3
-enable secret class
-
-line vty 0 15
-exec-timeout 60 0
-password cisco
-login
-exit
-
-line con 0
-exec-timeout 60 0
-password cisco
-logging synchronous
-login
-exit
-
-banner motd #
-This device is for authorized use only.
-#
-
 interface range f0/1 - 24, g0/1 - 2
-shutdown
-exit
-
+ shutdown
+ exit
+enable secret class
+no ip domain-lookup
+line vty 0 15
+ password cisco
+ login
+line con 0
+ password cisco
+ logging synchronous
+ login
+ exit
 vlan 10
-name Staff
+ name User
 vlan 99
-name Management
-exit
-
-interface range f0/3-4
-interface range f0/1-2
+ name Management
+interface range f0/1 - 2
+interface range f0/3 - 4
  switchport mode trunk
  channel-group 3 mode desirable
  switchport trunk native vlan 99
@@ -44,5 +31,3 @@ interface vlan 99
 interface port-channel 3
  switchport trunk native vlan 99
  switchport mode trunk
-
-end

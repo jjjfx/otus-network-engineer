@@ -3,11 +3,11 @@ hostname R1
 enable secret class
 
 line vty 0 15
+exec-timeout 60 0
 password cisco
 login
-exit
-
 line con 0
+exec-timeout 60 0
 password cisco
 logging synchronous
 login
@@ -21,18 +21,20 @@ interface gi0/0
 description -- to PC-A
 ip address 192.168.1.1 255.255.255.0
 no shutdown
-exit
-
 interface se0/0/0
 description -- to R3
-ip address 10.3.3.1 255.255.255.252
-bandwidth 128
+ip address 192.168.13.1 255.255.255.252
 no shutdown
-exit
-
 interface se0/0/1
 description -- to R2
-ip address 10.1.1.1 255.255.255.252
-bandwidth 128
+ip address 192.168.12.1 255.255.255.252
 no shutdown
-end
+interface loopback 1
+no shutdown
+interface loopback 5
+no shutdown
+interface loopback 9
+no shutdown
+interface loopback 13
+no shutdown
+exit
